@@ -39,7 +39,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
     res.status(400).send("Product does not exist");
   }
 
-  cartManager.updateCart(cartid, product, cart);
+  cartManager.updateCart(cartid, productId);
 
   res.send({ status: "success" });
 });

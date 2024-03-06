@@ -16,13 +16,13 @@ class CartManager {
     await CartsModel.create(cart);
   }
 
-  async updateCart(cartId, product) {
+  async updateCart(cartId, productId) {
     const cart = await this.getCartById(cartId);
-    const some = cart.products.some((p) => parseInt(p.product._id) == parseInt(product._id));
-    if (some) {
+    const index = cart.products.findIndex((p) => p.product._id == productId);
+    if (index >= 0) {
       cart.products[index].quantity += 1;
     } else {
-      cart.products.push({ product: product._id, quantity: 1 });
+      cart.products.push({ product: productId, quantity: 1 });
     }
 
     await CartsModel.updateOne({ _id: cartId }, cart);
