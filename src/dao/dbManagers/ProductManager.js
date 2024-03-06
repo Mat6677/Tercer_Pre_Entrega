@@ -8,8 +8,8 @@ class ProductManager {
       { limit: limit, page: page, lean: true }
     );
     const products = docs;
-    let nextLink = rest.hasNextPage ? `/?page=${rest.nextPage}` : null;
-    let prevLink = rest.hasPrevPage ? `/?page=${rest.prevPage}` : null;
+    let nextLink = rest.hasNextPage ? `/products/?page=${rest.nextPage}` : null;
+    let prevLink = rest.hasPrevPage ? `/products/?page=${rest.prevPage}` : null;
 
     return { products, rest, nextLink, prevLink };
   }
