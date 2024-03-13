@@ -43,12 +43,36 @@ router.get("/carts/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cart = await cartManager.getCartById(cid);
   const products = cart.products;
-  console.log(products)
-  res.render("carts", {cart, products });
+  console.log(products);
+  res.render("carts", { cart, products });
 });
 
 router.get("/chat", (req, res) => {
   res.render("chat", {});
+});
+
+const privateAccess = (req, res, next) => {
+  if (!req.session.user) {
+    console.log("not logged in");
+    return res.redirect("/login");
+  }
+  next();
+};
+const publicAccess = (req, res, next) => {
+  if (req.session.user) return res.redirect("/products");
+  next();
+};
+
+router.get("/register", publicAccess, (req, res) => {
+  res.render("register", {});
+});
+
+router.get("/login", publicAccess, (req, res) => {
+  res.render("login");
+});
+
+router.get("/profile", privateAccess, (req, res) => {
+  res.render("profile", { user: req.session.user });
 });
 
 module.exports = router;

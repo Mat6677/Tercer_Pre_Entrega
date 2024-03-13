@@ -1,25 +1,40 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const { Server } = require("socket.io");
 const productsRouter = require("./routes/products.router");
 const cartsRouter = require("./routes/carts.router");
 const viewsRouter = require("./routes/views.router");
-const { Server } = require("socket.io");
-const ProductManager = require("./dao/dbManagers/ProductManager");
+const sessionRouter = require('./routes/sessions.router');
 const MessageModel = require("./models/messages");
-const ProductsModel = require("./models/products");
-const PORT = 3300;
+const ProductManager = require("./dao/dbManagers/ProductManager");
+const PORT = 8080;
 const app = express();
 const productManager = new ProductManager();
+require("dotenv").config();
 
 mongoose
   .connect(
-    "mongodb+srv://gusal6677:IYBAlzuW04SLlA0Q@codercluster.vqloj77.mongodb.net/ecommerce"
+    `mongodb+srv://gusal6677:${process.env.MONGO_PASSWORD}@codercluster.vqloj77.mongodb.net/ecommerce`
   )
   .then(() => {
     console.log("Connected");
   });
 
+//** Session setting */
+app.use(
+  session({
+    secret: "ourNewSecret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: `mongodb+srv://gusal6677:${process.env.MONGO_PASSWORD}@codercluster.vqloj77.mongodb.net/ecommerce`,
+      ttl: 3600,
+    }),
+  })
+);
 
 //*--middlewares--*//
 app.use(express.json());
@@ -74,6 +89,7 @@ io.on("connection", async (socket) => {
   });
 });
 
+app.use('/api/sessions',sessionRouter)
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
