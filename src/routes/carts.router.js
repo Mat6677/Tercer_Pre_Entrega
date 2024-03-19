@@ -39,7 +39,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
     res.status(400).send("Product does not exist");
   }
 
-  cartManager.updateCart(cartid, productId);
+  await cartManager.updateCart(cartid, productId);
 
   res.send({ status: "success" });
 });
@@ -57,7 +57,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     res.status(400).send("Product does not exist");
   }
 
-  cartManager.deleteProductFromCart(cartid, productId, cart);
+  await cartManager.deleteProductFromCart(cartid, productId, cart);
 
   res.send({ status: "success" });
 });
@@ -65,7 +65,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
 router.delete("/:cid", async (req, res) => {
   const cartid = req.params.cid;
 
-  cartManager.deleteAllProductsFromCart(cartid);
+  await cartManager.deleteAllProductsFromCart(cartid);
 
   res.send({ status: "success" });
 });
@@ -85,7 +85,21 @@ router.put("/:cid/products/:pid", async (req, res) => {
     res.status(400).send("Product does not exist");
   }
 
-  cartManager.updateProductQuantity(quantity, cartid, productId, cart);
+  await cartManager.updateProductQuantity(quantity, cartid, productId, cart);
+
+  res.send({ status: "success" });
+});
+
+router.put("/:cid", async (req, res) => {
+  const { newProducts } = req.body;
+
+  const cartid = req.params.cid;
+  const cart = await cartManager.getCartById(cartid);
+  if (!cart) {
+    res.status(400).send("Cart does not exist");
+  }
+
+  await cartManager.addManyProducts(newProducts, cart);
 
   res.send({ status: "success" });
 });

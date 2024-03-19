@@ -22,11 +22,13 @@ router.get("/realtimeproducts", async (req, res) => {
 });
 
 router.get("/products", async (req, res) => {
+  let query = req.query.category ? req.query.category : false;
   let limit = req.query.limit;
   let page = req.query.page;
+  let sort = req.query.sort;
   try {
     const { products, rest, nextLink, prevLink } =
-      await productManager.getProducts(limit, page);
+      await productManager.getProducts(query, limit, page, sort);
     res.render("products", { products, nextLink, prevLink, ...rest });
   } catch (error) {
     res.status(500).send({ status: "error", error });
@@ -43,7 +45,6 @@ router.get("/carts/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cart = await cartManager.getCartById(cid);
   const products = cart.products;
-  console.log(products);
   res.render("carts", { cart, products });
 });
 
@@ -53,7 +54,6 @@ router.get("/chat", (req, res) => {
 
 const privateAccess = (req, res, next) => {
   if (!req.session.user) {
-    console.log("not logged in");
     return res.redirect("/login");
   }
   next();

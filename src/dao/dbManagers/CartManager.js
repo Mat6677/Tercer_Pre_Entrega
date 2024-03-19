@@ -28,10 +28,20 @@ class CartManager {
     await CartsModel.updateOne({ _id: cartId }, cart);
   }
 
-  async deleteProductFromCart(cartId, productId, cart) {
-    const newCart = cart.products.filter(
-      (p) => p.product.product !== productId
+  async addManyProducts(newProducts, cart) {
+    newProducts.forEach((p) => {
+      cart.products.push({ product: p._id, quantity: p.quantity || 1 });
+    });
+    await CartsModel.updateOne(
+      {
+        _id: cart._id,
+      },
+      cart
     );
+  }
+
+  async deleteProductFromCart(cartId, productId, cart) {
+    const newCart = cart.products.filter((p) => p.product._id != productId);
     await CartsModel.updateOne(
       { _id: cartId },
       { $set: { products: newCart } }
@@ -39,7 +49,7 @@ class CartManager {
   }
 
   async updateProductQuantity(quantity, cartId, productId, cart) {
-    const index = cart.products.findIndex((p) => p.product == productId);
+    const index = cart.products.findIndex((p) => p.product._id == productId);
     cart.products[index].quantity = quantity;
 
     await CartsModel.updateOne({ _id: cartId }, cart);
