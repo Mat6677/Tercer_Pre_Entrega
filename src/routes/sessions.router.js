@@ -4,7 +4,12 @@ const userModel = require("../models/users");
 const sessionRouter = Router();
 
 sessionRouter.post("/register", async (req, res) => {
+  let rol;
   const { first_name, last_name, email, age, password } = req.body;
+
+  if (email == "adminCoder@coder.com") {
+    rol = "admin";
+  }
 
   const result = await userModel.create({
     first_name,
@@ -12,6 +17,7 @@ sessionRouter.post("/register", async (req, res) => {
     email,
     age,
     password,
+    rol,
   });
   if (!first_name || !last_name || !email || !age || !password) {
     return res.status(400).send({ status: "error", message: "Missing data" });
@@ -38,6 +44,7 @@ sessionRouter.post("/login", async (req, res) => {
     name: `${user.first_name} ${user.last_name}`,
     email: user.email,
     age: user.age,
+    rol: user.rol,
   };
 
   res.send({

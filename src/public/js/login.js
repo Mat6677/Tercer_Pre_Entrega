@@ -14,6 +14,14 @@ loginForm.addEventListener("submit", (e) => {
   }).then((res) => {
     if (res.status == 200) {
       window.location.replace("/");
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something in credentials went wrong",
+        footer: "Try again",
+        allowOutsideClick: true,
+      });
     }
   });
 });
