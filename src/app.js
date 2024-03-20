@@ -14,6 +14,8 @@ const PORT = 8080;
 const app = express();
 const productManager = new ProductManager();
 require("dotenv").config();
+const passport = require("passport");
+const initializePassport = require("./config/passport.config");
 
 mongoose
   .connect(
@@ -39,6 +41,11 @@ app.use(
 //*--middlewares--*//
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//** passport */
+initializePassport();
+app.use(passport.initialize())
+app.use(passport.session())
 
 //*--views engine--*//
 app.engine("handlebars", handlebars.engine());
