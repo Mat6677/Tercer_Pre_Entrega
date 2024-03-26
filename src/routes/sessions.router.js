@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const userModel = require("../models/users");
+const passport = require("passport");
 
 const sessionRouter = Router();
 
@@ -25,9 +25,10 @@ sessionRouter.post(
   async (req, res) => {
     const user = req.user;
     req.session.user = {
-      name: `${user.firts_name}${user.last_name}`,
+      name: `${user.first_name.toLowerCase()} ${user.last_name.toLowerCase()}`,
       email: user.email,
       age: user.age,
+      rol: user.rol
     };
 
     res.send({
@@ -58,7 +59,7 @@ sessionRouter.get(
       rol:req.user.rol
     };
 
-    res.redirect("/home");
+    res.redirect("/products");
   }
 );
 

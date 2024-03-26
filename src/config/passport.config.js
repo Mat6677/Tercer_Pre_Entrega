@@ -2,7 +2,7 @@ const passport = require("passport");
 const local = require("passport-local");
 const { createHash, isValidPasword } = require("../utils");
 const GithubStrategy = require("passport-github2");
-const userModel = require("../models/user");
+const userModel = require("../models/users.js");
 
 const LocalStrategy = local.Strategy;
 
@@ -83,7 +83,7 @@ const initializePassport = () => {
               last_name: "",
               age: 0,
               email: profile._json.email,
-              rol: email == "adminCoder@coder.com" ? "admin" : "user",
+              rol: profile._json.email == "adminCoder@coder.com" ? "admin" : "user",
             };
             let result = await userModel.create(newUser);
             return done(null, result);

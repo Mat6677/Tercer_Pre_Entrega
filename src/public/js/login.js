@@ -13,7 +13,7 @@ loginForm.addEventListener("submit", (e) => {
     },
   }).then((res) => {
     if (res.status == 200) {
-      window.location.replace("/");
+      window.location.replace("/products");
     } else {
       Swal.fire({
         icon: "error",

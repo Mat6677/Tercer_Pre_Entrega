@@ -26,11 +26,17 @@ router.get("/products", async (req, res) => {
   let limit = req.query.limit;
   let page = req.query.page;
   let sort = req.query.sort;
-  console.log(req.session.user)
   try {
     const { products, rest, nextLink, prevLink } =
       await productManager.getProducts(query, limit, page, sort);
-    res.render("products", { products, nextLink, prevLink, ...rest, user: req.session.user });
+
+    res.render("products", {
+      products,
+      nextLink,
+      prevLink,
+      ...rest,
+      user: req.session.user,
+    });
   } catch (error) {
     res.status(500).send({ status: "error", error });
   }
@@ -65,6 +71,5 @@ router.get("/register", publicAccess, (req, res) => {
 router.get("/login", publicAccess, (req, res) => {
   res.render("login");
 });
-
 
 module.exports = router;
