@@ -10,6 +10,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "carts",
+  },
+});
+
+userSchema.pre("find", function (next) {
+  this.populate("cart");
+  next();
 });
 
 const userModel = mongoose.model("users", userSchema);

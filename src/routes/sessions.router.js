@@ -28,7 +28,7 @@ sessionRouter.post(
       name: `${user.first_name.toLowerCase()} ${user.last_name.toLowerCase()}`,
       email: user.email,
       age: user.age,
-      rol: user.rol
+      rol: user.rol,
     };
 
     res.send({
@@ -56,7 +56,7 @@ sessionRouter.get(
       name: req.user.first_name,
       email: req.user.email,
       age: req.user.age,
-      rol:req.user.rol
+      rol: req.user.rol,
     };
 
     res.redirect("/products");
@@ -70,6 +70,10 @@ sessionRouter.get("/logout", (req, res) => {
     }
     res.redirect("/login");
   });
+});
+
+sessionRouter.get("/current", (req, res) => {
+  res.send({ user: req.user });
 });
 
 module.exports = sessionRouter;

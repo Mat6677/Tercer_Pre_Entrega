@@ -3,6 +3,9 @@ const local = require("passport-local");
 const { createHash, isValidPasword } = require("../utils");
 const GithubStrategy = require("passport-github2");
 const userModel = require("../models/users.js");
+const CartManager = require("../dao/dbManagers/CartManager.js");
+
+const cartManager = new CartManager();
 
 const LocalStrategy = local.Strategy;
 
@@ -23,6 +26,7 @@ const initializePassport = () => {
           if (user) {
             return done(null, false);
           }
+          const cart = await cartManager.createCart();
 
           const newUser = {
             first_name,
@@ -31,6 +35,7 @@ const initializePassport = () => {
             age,
             password: createHash(password),
             rol: email == "adminCoder@coder.com" ? "admin" : "user",
+            cart: cart._id,
           };
           const result = await userModel.create(newUser);
 
@@ -77,13 +82,19 @@ const initializePassport = () => {
       async (_accessToken, _refreshToken, profile, done) => {
         try {
           const user = await userModel.findOne({ email: profile._json.email });
+
+          const cart = await cartManager.createCart();
           if (!user) {
             let newUser = {
               first_name: profile._json.name,
               last_name: "",
               age: 0,
               email: profile._json.email,
-              rol: profile._json.email == "adminCoder@coder.com" ? "admin" : "user",
+              rol:
+                profile._json.email == "adminCoder@coder.com"
+                  ? "admin"
+                  : "user",
+              cart: cart._id,
             };
             let result = await userModel.create(newUser);
             return done(null, result);
