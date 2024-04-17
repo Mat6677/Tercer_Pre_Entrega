@@ -1,107 +1,24 @@
 const { Router } = require("express");
-const CartManager = require("../dao/dbManagers/CartManager.js");
-const ProductManager = require("../dao/dbManagers/ProductManager.js");
+const {
+  getCarts,
+  getCartById,
+  addCart,
+  addProductToCart,
+  deleteProductFromCart,
+  deleteAllProductsFromCart,
+  updateProductQuantity,
+  addManyProducts,
+} = require("../controllers/carts.controller");
 
-const cartManager = new CartManager();
-const productManager = new ProductManager();
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const carts = await cartManager.getCarts();
-  res.send(carts);
-});
-
-router.get("/:cid", async (req, res) => {
-  const cart = await cartManager.getCartById(parseInt(req.params.cid));
-
-  if (!cart) {
-    return res.status(400).send({ message: "Cart has not been found" });
-  }
-  res.send(cart.products);
-});
-
-router.post("/", async (req, res) => {
-  await cartManager.createCart();
-
-  res.send({ message: "success" });
-});
-
-router.post("/:cid/products/:pid", async (req, res) => {
-  const cartid = req.params.cid;
-  const productId = req.params.pid;
-
-  const cart = await cartManager.getCartById(cartid);
-  const product = await productManager.getProductById(productId);
-  if (!cart) {
-    res.status(400).send("Cart does not exist");
-  }
-  if (!product) {
-    res.status(400).send("Product does not exist");
-  }
-
-  await cartManager.updateCart(cartid, productId);
-
-  res.send({ status: "success" });
-});
-
-router.delete("/:cid/products/:pid", async (req, res) => {
-  const cartid = req.params.cid;
-  const productId = req.params.pid;
-
-  const cart = await cartManager.getCartById(cartid);
-  const product = await productManager.getProductById(productId);
-  if (!cart) {
-    res.status(400).send("Cart does not exist");
-  }
-  if (!product) {
-    res.status(400).send("Product does not exist");
-  }
-
-  await cartManager.deleteProductFromCart(cartid, productId, cart);
-
-  res.send({ status: "success" });
-});
-
-router.delete("/:cid", async (req, res) => {
-  const cartid = req.params.cid;
-
-  await cartManager.deleteAllProductsFromCart(cartid);
-
-  res.send({ status: "success" });
-});
-
-router.put("/:cid/products/:pid", async (req, res) => {
-  const { quantity } = req.body;
-
-  const cartid = req.params.cid;
-  const productId = req.params.pid;
-
-  const cart = await cartManager.getCartById(cartid);
-  const product = await productManager.getProductById(productId);
-  if (!cart) {
-    res.status(400).send("Cart does not exist");
-  }
-  if (!product) {
-    res.status(400).send("Product does not exist");
-  }
-
-  await cartManager.updateProductQuantity(quantity, cartid, productId, cart);
-
-  res.send({ status: "success" });
-});
-
-router.put("/:cid", async (req, res) => {
-  const { newProducts } = req.body;
-
-  const cartid = req.params.cid;
-  const cart = await cartManager.getCartById(cartid);
-  if (!cart) {
-    res.status(400).send("Cart does not exist");
-  }
-
-  await cartManager.addManyProducts(newProducts, cart);
-
-  res.send({ status: "success" });
-});
+router.get("/", getCarts);
+router.get("/:cid", getCartById);
+router.post("/", addCart);
+router.post("/:cid/products/:pid", addProductToCart);
+router.delete("/:cid/products/:pid", deleteProductFromCart);
+router.delete("/:cid", deleteAllProductsFromCart);
+router.put("/:cid/products/:pid", updateProductQuantity);
+router.put("/:cid", addManyProducts);
 
 module.exports = router;
