@@ -58,7 +58,7 @@ const logout = (req, res) => {
 };
 
 const currentUser = (req, res) => {
-  res.send({ user: req.user });
+  res.send({ user: new UserDTO(req.user) });
 };
 
 module.exports = {

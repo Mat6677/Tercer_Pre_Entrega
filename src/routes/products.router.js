@@ -9,10 +9,17 @@ const {
 
 const router = Router();
 
+const adminVerification = (req, res, next) => {
+  if(req.session.user.rol != "admin" || req.session.user.rol != "ADMIN") {
+    return res.status(403).send({status:"error",message:"Your rol is not admin"})
+  }
+  next()
+};
+
 router.get("/", getProducts);
 router.get("/:pid", getProductById);
-router.post("/", addProduct);
-router.put("/:pid", updatedProduct);
-router.delete("/:pid", deleteProduct);
+router.post("/", adminVerification, addProduct);
+router.put("/:pid", adminVerification, updatedProduct);
+router.delete("/:pid", adminVerification, deleteProduct);
 
 module.exports = router;
