@@ -1,4 +1,8 @@
-const ProductDao = require("../dao/dbManagers/ProductManager");
+const { dao } = require("../config/config");
+const ProductDao =
+  dao == "mongo" || dao == "MONGO"
+    ? require("../dao/dbManagers/ProductManager")
+    : require("../dao/fileManagers/ProductManager");
 
 class ProductService {
   constructor() {

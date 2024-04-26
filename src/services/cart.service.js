@@ -1,5 +1,5 @@
-const CartDao = require("../dao/dbManagers/CartManager");
-
+const { dao } = require("../config/config");
+const CartDao = dao == "mongo" || dao == "MONGO" ? require("../dao/dbManagers/CartManager") : require("../dao/fileManagers/CartManager");
 
 class CartService {
   constructor() {

@@ -2,7 +2,7 @@ const fs = require("node:fs")
 
 const pathFile = __dirname + "/files/products.json";
 
-export class ProductManager {
+class ProductManager {
   productVerifictions(product) {
     if (
       !product.hasOwnProperty("title") ||
@@ -132,3 +132,5 @@ export class ProductManager {
     await fs.promises.writeFile(pathFile, JSON.stringify(updatedProducts));
   }
 }
+
+module.exports = ProductManager

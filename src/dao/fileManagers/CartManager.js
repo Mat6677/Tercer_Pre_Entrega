@@ -2,7 +2,7 @@ const fs = require("node:fs");
 
 const pathFile = __dirname + "/files/carts.json";
 
-export class CartManager {
+class CartManager {
   async getCarts() {
     if (!fs.existsSync(pathFile)) {
       await fs.promises.writeFile(pathFile, "[]");
@@ -50,3 +50,5 @@ export class CartManager {
     await fs.promises.writeFile(pathFile, JSON.stringify(carts));
   }
 }
+
+module.exports = CartManager;
