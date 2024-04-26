@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 const productsRouter = require("./routes/products.router");
 const cartsRouter = require("./routes/carts.router");
 const viewsRouter = require("./routes/views.router");
-const sessionRouter = require('./routes/sessions.router');
+const sessionRouter = require("./routes/sessions.router");
 const MessageModel = require("./models/messages");
 const ProductManager = require("./dao/dbManagers/ProductManager");
 const PORT = 8080;
@@ -44,8 +44,8 @@ app.use(express.urlencoded({ extended: true }));
 
 //** passport */
 initializePassport();
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
 //*--views engine--*//
 app.engine("handlebars", handlebars.engine());
@@ -96,7 +96,7 @@ io.on("connection", async (socket) => {
   });
 });
 
-app.use('/api/sessions',sessionRouter)
+app.use("/api/sessions", sessionRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
