@@ -1,5 +1,8 @@
 const { dao } = require("../config/config");
-const CartDao = dao == "mongo" || dao == "MONGO" ? require("../dao/dbManagers/CartManager") : require("../dao/fileManagers/CartManager");
+const CartDao =
+  dao == "mongo" || dao == "MONGO"
+    ? require("../dao/dbManagers/CartManager")
+    : require("../dao/fileManagers/CartManager");
 
 class CartService {
   constructor() {
@@ -33,6 +36,9 @@ class CartService {
   }
   async deleteAllProductsFromCart(cartId) {
     return await this.dao.deleteAllProductsFromCart(cartId);
+  }
+  async purchase(cartId) {
+    return await this.dao.purchase(cartId);
   }
 }
 

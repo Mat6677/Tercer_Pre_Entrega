@@ -14,7 +14,7 @@ class CartManager {
   async createCart() {
     const cart = { products: [] };
     const result = await CartsModel.create(cart);
-    return result
+    return result;
   }
 
   async updateCart(cartId, productId) {
@@ -60,6 +60,18 @@ class CartManager {
     const cart = this.getCartById(cartId);
     cart.products = [];
     await CartsModel.updateOne({ _id: cartId }, cart);
+  }
+
+  async purchase(cartId) {
+    const cart = this.getCartById(cartId);
+    let newCart;
+    for (let i = 0; i < cart.products.length; i++) {
+      if (cart.products[0].quantity < cart.products[0].product.stock) {
+        newCart = cart.products.filter((p) => p != cart.products[0].product);
+      }
+    }
+    await CartsModel.updateOne({ _id: cartId }, newCart);
+    return newCart;
   }
 }
 
