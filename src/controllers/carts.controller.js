@@ -98,9 +98,9 @@ const addManyProducts = async (req, res) => {
 };
 
 const purchase = async (req, res) => {
-  const { id } = req.params;
+  const cartid = req.params.cid;
   try {
-    const result = await cartService.purchase(id);
+    const result = await cartService.purchase(cartid);
     res.send({ state: "success", itemsLeft: result });
   } catch (error) {
     res.status(404).send({ state: "Error", error: error });
@@ -116,5 +116,5 @@ module.exports = {
   deleteAllProductsFromCart,
   updateProductQuantity,
   addManyProducts,
-  purchase
+  purchase,
 };

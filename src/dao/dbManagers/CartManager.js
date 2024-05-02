@@ -57,21 +57,18 @@ class CartManager {
   }
 
   async deleteAllProductsFromCart(cartId) {
-    const cart = this.getCartById(cartId);
+    const cart = await this.getCartById(cartId);
     cart.products = [];
     await CartsModel.updateOne({ _id: cartId }, cart);
   }
 
   async purchase(cartId) {
-    const cart = this.getCartById(cartId);
-    let newCart;
-    for (let i = 0; i < cart.products.length; i++) {
-      if (cart.products[0].quantity < cart.products[0].product.stock) {
-        newCart = cart.products.filter((p) => p != cart.products[0].product);
-      }
-    }
-    await CartsModel.updateOne({ _id: cartId }, newCart);
-    return newCart;
+    const cart = await this.getCartById(cartId);
+    console.log(cart);
+    console.log(cart.products[0].product.stock)
+    cart.products.filter((p) => p.quantity < p.product.stock);
+    console.log("newcart", cart);
+    await CartsModel.updateOne({ _id: cartId }, cart);
   }
 }
 
