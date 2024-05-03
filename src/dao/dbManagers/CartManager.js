@@ -1,4 +1,8 @@
 const CartsModel = require("../../models/carts");
+const TicketModel = require("../../models/ticket");
+
+const ProductService = require("../../services/product.service");
+const productService = new ProductService();
 
 class CartManager {
   async getCarts() {
@@ -62,13 +66,40 @@ class CartManager {
     await CartsModel.updateOne({ _id: cartId }, cart);
   }
 
-  async purchase(cartId) {
+  async purchase(cartId, purchaser) {
     const cart = await this.getCartById(cartId);
-    console.log(cart);
-    console.log(cart.products[0].product.stock)
-    cart.products.filter((p) => p.quantity < p.product.stock);
-    console.log("newcart", cart);
-    await CartsModel.updateOne({ _id: cartId }, cart);
+    let totalAmount = 0;
+    for (let i = 0; i < cart.products.length; i++) {
+      if (cart.products[i].quantity < cart.products[i].product.stock) {
+        totalAmount +=
+          cart.products[i].product.price * cart.products[i].quantity;
+
+        /** STOCK UPDATE */
+        productService.updateProduct(cart.products[i].product._id, {
+          stock: cart.products[i].product.stock - cart.products[i].quantity,
+        });
+      }
+    }
+    
+    try {
+      const date = new Date()
+      const fecha = `${date.getFullYear()}-${date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()}-${date.getDay() < 10 ? '0' + date.getDay() : date.getDay()}`
+      const hora = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}:${date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()}`
+      /** TICKET */
+      await TicketModel.create({
+        code: `${fecha}${hora}${"test@gmail.com"}`,
+        purchase_datetime: `${fecha}/${hora}`,
+        amount: totalAmount,
+        purchaser: "test@gmail.com",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    cart.products = cart.products.filter((p) => p.quantity > p.product.stock);
+
+    await CartsModel.updateOne({ _id: cart._id }, cart);
+    return cart;
   }
 }
 

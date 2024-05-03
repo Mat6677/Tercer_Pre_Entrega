@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const ticketSchema = new mongoose.Schema({
-  code: { type: String, unique: true, required: true },
-  purchase_datetime: { type: Date, default: Date.now, required: true },
+  code: { type: String, require: true },
+  purchase_datetime: { type: String },
   amount: { type: Number, required: true },
   purchaser: { type: String, required: true },
 });

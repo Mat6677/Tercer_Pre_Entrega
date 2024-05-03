@@ -99,11 +99,12 @@ const addManyProducts = async (req, res) => {
 
 const purchase = async (req, res) => {
   const cartid = req.params.cid;
+  const purchaser = req.session.user;
   try {
-    const result = await cartService.purchase(cartid);
+    const result = await cartService.purchase(cartid, purchaser);
     res.send({ state: "success", itemsLeft: result });
   } catch (error) {
-    res.status(404).send({ state: "Error", error: error });
+    res.status(404).send({ state: "Error", error });
   }
 };
 
