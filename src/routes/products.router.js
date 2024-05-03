@@ -5,6 +5,7 @@ const {
   addProduct,
   updatedProduct,
   deleteProduct,
+  getMockingProducts
 } = require("../controllers/products.controller");
 
 const router = Router();
@@ -18,6 +19,7 @@ const adminVerification = (req, res, next) => {
 
 router.get("/", getProducts);
 router.get("/:pid", getProductById);
+router.get("/mockingproducts", getMockingProducts)
 router.post("/", adminVerification, addProduct);
 router.put("/:pid", adminVerification, updatedProduct);
 router.delete("/:pid", adminVerification, deleteProduct);

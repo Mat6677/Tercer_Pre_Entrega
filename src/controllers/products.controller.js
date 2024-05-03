@@ -29,6 +29,9 @@ const deleteProduct = async (req, res) => {
   }
   res.send({ status: "success" });
 };
+const getMockingProducts = (req,res) => {
+  
+}
 
 module.exports = {
   getProducts,
@@ -36,4 +39,5 @@ module.exports = {
   addProduct,
   updatedProduct,
   deleteProduct,
+  getMockingProducts
 };
