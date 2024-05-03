@@ -1,3 +1,4 @@
+const { faker } = require("@faker-js/faker");
 const ProductService = require("../services/product.service");
 
 const productService = new ProductService();
@@ -29,9 +30,24 @@ const deleteProduct = async (req, res) => {
   }
   res.send({ status: "success" });
 };
-const getMockingProducts = (req,res) => {
-  
-}
+const getMockingProducts = async (req, res) => {
+  const products = [];
+
+  for (let i = 0; i < 10; i++) {
+    const product = {
+      title: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      price: faker.commerce.price({ min: 0.25, max: 50 }),
+      thumbnail: "N/A",
+      stock: faker.datatype.number({ min: 0, max: 100 }),
+      code: faker.datatype.uuid(),
+      category: faker.commerce.department(),
+    };
+    products.push(product);
+  }
+
+  return res.status(500).send({ products });
+};
 
 module.exports = {
   getProducts,
@@ -39,5 +55,5 @@ module.exports = {
   addProduct,
   updatedProduct,
   deleteProduct,
-  getMockingProducts
+  getMockingProducts,
 };
