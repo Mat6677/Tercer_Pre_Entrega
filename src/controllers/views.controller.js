@@ -8,6 +8,7 @@ const getHomeView = async (req, res) => {
     const { products, rest } = await productService.getProducts();
     res.render("home", { products });
   } catch (error) {
+    req.logger.error(`${req.method} on ${req.url} - Error: ${error}`);
     res.status(500).send({ status: "error", error });
   }
 };
@@ -34,6 +35,7 @@ const getProductsView = async (req, res) => {
       user: req.session.user,
     });
   } catch (error) {
+    req.logger.error(`${req.method} on ${req.url} - Error: ${error}`);
     res.status(500).send({ status: "error", error });
   }
 };

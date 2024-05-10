@@ -14,6 +14,7 @@ const getCartById = async (req, res) => {
   const cart = await cartService.getCartById(parseInt(req.params.cid));
 
   if (!cart) {
+    req.logger.error(`${req.method} on ${req.url} - "Cart has not been found"`);
     return res.status(400).send({ message: "Cart has not been found" });
   }
   res.send(cart.products);
@@ -30,9 +31,11 @@ const addProductToCart = async (req, res) => {
   const cart = await cartService.getCartById(cartid);
   const product = await productService.getProductById(productId);
   if (!cart) {
+    req.logger.error(`${req.method} on ${req.url} - "Cart does not exist"`);
     res.status(400).send("Cart does not exist");
   }
   if (!product) {
+    req.logger.error(`${req.method} on ${req.url} - "Product does not exist"`);
     res.status(400).send("Product does not exist");
   }
 
@@ -47,9 +50,11 @@ const deleteProductFromCart = async (req, res) => {
   const cart = await cartService.getCartById(cartid);
   const product = await productService.getProductById(productId);
   if (!cart) {
+    req.logger.error(`${req.method} on ${req.url} - "Cart does not exist"`);
     res.status(400).send("Cart does not exist");
   }
   if (!product) {
+    req.logger.error(`${req.method} on ${req.url} - "Product does not exist"`);
     res.status(400).send("Product does not exist");
   }
 
@@ -73,9 +78,11 @@ const updateProductQuantity = async (req, res) => {
   const cart = await cartService.getCartById(cartid);
   const product = await productService.getProductById(productId);
   if (!cart) {
+    req.logger.error(`${req.method} on ${req.url} - "Cart does not exist"`);
     res.status(400).send("Cart does not exist");
   }
   if (!product) {
+    req.logger.error(`${req.method} on ${req.url} - "Product does not exist"`);
     res.status(400).send("Product does not exist");
   }
 
@@ -89,6 +96,7 @@ const addManyProducts = async (req, res) => {
   const cartid = req.params.cid;
   const cart = await cartService.getCartById(cartid);
   if (!cart) {
+    req.logger.error(`${req.method} on ${req.url} - "Cart does not exist"`);
     res.status(400).send("Cart does not exist");
   }
 
@@ -104,6 +112,7 @@ const purchase = async (req, res) => {
     const result = await cartService.purchase(cartid, purchaser);
     res.send({ state: "success", itemsLeft: result });
   } catch (error) {
+    req.logger.error(`${req.method} on ${req.url} - Error:${error}`);
     res.status(404).send({ state: "Error", error });
   }
 };

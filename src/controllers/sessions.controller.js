@@ -7,6 +7,7 @@ const register = async (req, res) => {
 };
 
 const registerFail = (req, res) => {
+  req.logger.error(`${req.method} on ${req.url} - "Authentication error"`);
   res.status(401).send({ status: "error", error: "Authentication error" });
 };
 
@@ -22,6 +23,7 @@ const login = async (req, res) => {
 };
 
 const loginFail = (req, res) => {
+  req.logger.warning(`${req.method} on ${req.url} - "Login fail"`);
   res.status(401).send({ status: "error", error: "Login fail" });
 };
 
@@ -41,6 +43,7 @@ const gitHubCallBack = (req, res) => async (req, res) => {
 const logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
+      req.logger.error(`${req.method} on ${req.url} - "There was an error destroying session" - Error: ${err}`);
       return res.status(500).send("There was an error destroying session");
     }
     res.redirect("/login");

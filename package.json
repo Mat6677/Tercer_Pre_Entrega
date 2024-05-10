@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "set NODE_ENV=development& nodemon src/app.js --dao mongo",
+    "prod": "set NODE_ENV=production& nodemon src/app.js --dao mongo"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.7.4"
+    "socket.io": "^4.7.4",
+    "winston": "^3.13.0"
   }
 }

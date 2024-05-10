@@ -1,6 +1,5 @@
 const { faker } = require("@faker-js/faker");
 const ProductService = require("../services/product.service");
-
 const productService = new ProductService();
 
 const getProducts = async (req, res) => {
@@ -10,6 +9,7 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   const product = await productService.getProductById(parseInt(req.params.pid));
   if (!product) {
+    req.logger.error(`${req.method} on ${req.url} - "Product has not been found"`);
     return res.status(404).json({ error: "Product not found" });
   }
   res.send(product);
@@ -26,6 +26,7 @@ const updatedProduct = async (req, res) => {
 };
 const deleteProduct = async (req, res) => {
   if (await productService.deleteProduct(parseInt(req.params.pid))) {
+    req.logger.error(`${req.method} on ${req.url} - "Product has not been found"`);
     res.status(400).send({ message: "Product not found" });
   }
   res.send({ status: "success" });
