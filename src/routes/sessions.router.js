@@ -9,6 +9,7 @@ const {
   gitHubCallBack,
   logout,
   currentUser,
+  sendResetEmail,
 } = require("../controllers/sessions.controller");
 
 const sessionRouter = Router();
@@ -39,5 +40,6 @@ sessionRouter.get(
 );
 sessionRouter.get("/logout", logout);
 sessionRouter.get("/current", currentUser);
+sessionRouter.get("/resetEmail", sendResetEmail);
 
 module.exports = sessionRouter;
