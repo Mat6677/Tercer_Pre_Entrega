@@ -10,6 +10,7 @@ const {
   logout,
   currentUser,
   sendResetEmail,
+  resetPassword
 } = require("../controllers/sessions.controller");
 
 const sessionRouter = Router();
@@ -40,6 +41,7 @@ sessionRouter.get(
 );
 sessionRouter.get("/logout", logout);
 sessionRouter.get("/current", currentUser);
-sessionRouter.get("/resetEmail", sendResetEmail);
+sessionRouter.post("/resetEmail", sendResetEmail);
+sessionRouter.post("/resetPassword", resetPassword)
 
 module.exports = sessionRouter;

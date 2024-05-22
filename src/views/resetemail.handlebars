@@ -1,0 +1,24 @@
+<h1>Introduce your email</h1>
+<form action="" id="emailForm">
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email">
+    <button>Send linhk to reset</button>
+</form>
+
+<script>
+    const emailForm = document.getElementById("emailForm")
+    const resetEmail = document.getElementById("email")
+
+    emailForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("/api/sessions/resetemail", {
+            method: "POST",
+            body: JSON.stringify(resetEmail.value),
+            headers: {
+            "Content-Type": "application/json",
+            },
+        }).then((res) => {
+            
+        });
+    });
+</script>

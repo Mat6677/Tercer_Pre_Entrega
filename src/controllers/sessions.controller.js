@@ -1,6 +1,8 @@
 const passport = require("passport");
 const UserDTO = require("../dao/DTOs/user.dto");
 const nodemailer = require("nodemailer");
+const userModel = require("../models/users");
+const { isValidPasword, createHash } = require("../utils/bcrypt");
 require("dotenv").config();
 
 const transport = nodemailer.createTransport({
@@ -71,18 +73,41 @@ const sendResetEmail = async (req, res) => {
   try {
     await transport.sendMail({
       from: `Ecommerce password reset <${process.env.MAIL_AUTH_USER}>`,
-      to: `${req.user.email}`,
+      to: `${req.body}`,
       subject: "password reset",
       html: `
           <div>
             <p>Click in the next link to reset your password</p>
-            <a href="/api/sessions/emailreset">Link</a>
+            <a href="/resetPassword">Link</a>
           </div>
       `,
     });
+    req.user.email = req.body;
     res.status(200).send({ message: "Mail sended successfuly" });
   } catch (error) {
     res.status(404).send({ message: "Error", error: error.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const user = await userModel.find({ email: req.user.email });
+    const newPassword = req.body;
+    if (isValidPasword(user, newPassword)) {
+      res
+        .status(404)
+        .send({
+          status: "error",
+          message: "The password can not be the same that it was",
+        });
+    }
+    await userModel.updateOne(
+      { _id: user._id },
+      { ...user, password: createHash(newPassword) }
+    );
+    window.location.replace("/login")
+  } catch (error) {
+    res.status(404).send({message:"error", error: error.message})
   }
 };
 
@@ -95,5 +120,6 @@ module.exports = {
   gitHubCallBack,
   logout,
   currentUser,
-  sendResetEmail
+  sendResetEmail,
+  resetPassword,
 };
