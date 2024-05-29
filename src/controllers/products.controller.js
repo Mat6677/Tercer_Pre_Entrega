@@ -9,15 +9,23 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   const product = await productService.getProductById(parseInt(req.params.pid));
   if (!product) {
-    req.logger.error(`${req.method} on ${req.url} - "Product has not been found"`);
+    req.logger.error(
+      `${req.method} on ${req.url} - "Product has not been found"`
+    );
     return res.status(404).json({ error: "Product not found" });
   }
   res.send(product);
 };
 const addProduct = async (req, res) => {
+  const user = req.user;
   const product = req.body;
-  await productService.addProduct(product);
-  res.send({ status: "success" });
+  if (user.rol == "premium") {
+    await productService.addProduct({ ...product, owner: user.email });
+    res.send({ status: "success" });
+  } else {
+    await productService.addProduct(product);
+    res.send({ status: "success" });
+  }
 };
 const updatedProduct = async (req, res) => {
   await productService.updateProduct(parseInt(req.params.pid), req.body);
@@ -25,11 +33,24 @@ const updatedProduct = async (req, res) => {
   res.send({ status: "success" });
 };
 const deleteProduct = async (req, res) => {
-  if (await productService.deleteProduct(parseInt(req.params.pid))) {
-    req.logger.error(`${req.method} on ${req.url} - "Product has not been found"`);
+  const user = req.user;
+  const product = productService.getProductById(req.params.pid);
+
+  if (!product) {
+    req.logger.error(
+      `${req.method} on ${req.url} - "Product has not been found"`
+    );
     res.status(400).send({ message: "Product not found" });
   }
-  res.send({ status: "success" });
+  if (user.email == product.owner || user.rol == "admin") {
+    await productService.deleteProduct(parseInt(req.params.pid));
+    res.send({ status: "success" });
+  } else {
+    req.logger.error(
+      `${req.method} on ${req.url} - "Can not delete products from another owner"`
+    );
+    res.status(400).send({ message: "Can not delete products from another owner" });
+  }
 };
 const getMockingProducts = async (req, res) => {
   const products = [];

@@ -65,6 +65,14 @@ const getLoginView = (req, res) => {
   res.render("login");
 };
 
+const resetEmail = (req,res) => {
+  res.render("resetemail")
+}
+
+const resetPassword = (req,res) => {
+  res.render("resetpassword")
+}
+
 module.exports = {
   getHomeView,
   getRealTimeProductsView,
@@ -74,4 +82,6 @@ module.exports = {
   getChatView,
   getRegisterView,
   getLoginView,
+  resetEmail,
+  resetPassword
 };

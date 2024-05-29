@@ -8,6 +8,8 @@ const {
   getChatView,
   getRegisterView,
   getLoginView,
+  resetEmail,
+  resetPassword
 } = require("../controllers/views.controller");
 
 const router = Router();
@@ -33,5 +35,7 @@ router.get("/carts/:cid", getCartView);
 router.get("/chat", userVerification, getChatView);
 router.get("/register", publicAccess, getRegisterView);
 router.get("/login", publicAccess, getLoginView);
+router.get("/resetemail", resetEmail)
+router.get("/resetpassword", resetPassword)
 
-module.exports = router;
+module.exports = router; 

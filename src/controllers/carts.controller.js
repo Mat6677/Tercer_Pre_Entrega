@@ -30,6 +30,11 @@ const addProductToCart = async (req, res) => {
 
   const cart = await cartService.getCartById(cartid);
   const product = await productService.getProductById(productId);
+  if (product.owner == req.user.email) {
+    req.logger.error(`${req.method} on ${req.url} - "The owner can not add his product to his own cart"`);
+    res.status(400).send("Cart can not have this product");
+  }
+
   if (!cart) {
     req.logger.error(`${req.method} on ${req.url} - "Cart does not exist"`);
     res.status(400).send("Cart does not exist");

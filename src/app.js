@@ -9,6 +9,7 @@ const cartsRouter = require("./routes/carts.router");
 const viewsRouter = require("./routes/views.router");
 const sessionRouter = require("./routes/sessions.router");
 const testRouter = require("./routes/tests.router");
+const usersRouter = require("./routes/users.router");
 const MessageModel = require("./models/messages");
 const ProductManager = require("./dao/dbManagers/ProductManager");
 const PORT = 8080;
@@ -103,4 +104,5 @@ app.use("/loggertest",testRouter)
 app.use("/api/sessions", sessionRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/users", usersRouter)
 app.use("/", viewsRouter);
