@@ -11,7 +11,7 @@ const {
 const router = Router();
 
 const adminVerification = (req, res, next) => {
-  if (req.session.user.rol != "admin" || req.session.user.rol != "ADMIN") {
+  if (req.session.user.rol != "admin" || req.session.user.rol != "premium") {
     return res
       .status(403)
       .send({ status: "error", message: "Your rol is not admin" });

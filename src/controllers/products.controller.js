@@ -3,8 +3,16 @@ const ProductService = require("../services/product.service");
 const productService = new ProductService();
 
 const getProducts = async (req, res) => {
-  const { products, rest } = await productService.getProducts();
-  res.send({ products, rest });
+  try {
+    const { products, rest } = await productService.getProducts();
+    res.status(200).send({ products, rest });
+  } catch (error) {
+    req.logger.error(
+      `${req.method} on ${req.url} - "Something failed"`
+    );
+    return res.status(500).json({ error: error });
+  }
+  
 };
 const getProductById = async (req, res) => {
   const product = await productService.getProductById(parseInt(req.params.pid));
@@ -19,12 +27,15 @@ const getProductById = async (req, res) => {
 const addProduct = async (req, res) => {
   const user = req.user;
   const product = req.body;
+  if (user.rol == "user") {
+    res.status(401).send({status:"fail", message:"You can not add products being rol user"})
+  }
   if (user.rol == "premium") {
     await productService.addProduct({ ...product, owner: user.email });
-    res.send({ status: "success" });
+    res.status(200).send({ status: "success" });
   } else {
     await productService.addProduct(product);
-    res.send({ status: "success" });
+    res.status(200).send({ status: "success" });
   }
 };
 const updatedProduct = async (req, res) => {
@@ -40,16 +51,16 @@ const deleteProduct = async (req, res) => {
     req.logger.error(
       `${req.method} on ${req.url} - "Product has not been found"`
     );
-    res.status(400).send({ message: "Product not found" });
+    res.status(404).send({ message: "Product not found" });
   }
   if (user.email == product.owner || user.rol == "admin") {
     await productService.deleteProduct(parseInt(req.params.pid));
-    res.send({ status: "success" });
+    res.status(200).send({ status: "success" });
   } else {
     req.logger.error(
       `${req.method} on ${req.url} - "Can not delete products from another owner"`
     );
-    res.status(400).send({ message: "Can not delete products from another owner" });
+    res.status(401).send({ message: "Can not delete products from another owner" });
   }
 };
 const getMockingProducts = async (req, res) => {

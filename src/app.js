@@ -19,6 +19,8 @@ require("dotenv").config();
 const passport = require("passport");
 const initializePassport = require("./config/passport.config");
 const { addLogger } = require("./utils/loggers");
+const swaggerJsDoc = require("swagger-jsdoc")
+const swaggerUiExpress = require('swagger-ui-express')
 
 mongoose
   .connect(
@@ -45,6 +47,18 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(addLogger)
+
+//swagger-documentation 
+const swaggerOptions = {
+  definition:{
+      openapi: '3.0.1',
+      info: {
+          title: "documetación de AdoptMe API",
+          description: "API pensada para usar de ejemplo en la clase 39-swagger"
+      }
+  },
+  apis: [`${__dirname}/../docs/**/*.yaml`]
+}
 
 //** passport */
 initializePassport();
@@ -99,6 +113,9 @@ io.on("connection", async (socket) => {
     io.emit("chatMessages", { messages });
   });
 });
+
+const specs = swaggerJsDoc(swaggerOptions)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 app.use("/loggertest",testRouter)
 app.use("/api/sessions", sessionRouter);
